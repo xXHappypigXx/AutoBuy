@@ -93,7 +93,9 @@ function CPSPCperBuilding() {
             }
 
             buildings[building] = ((me.storedTotalCps / me.amount) * Game.globalCpsMult + synergyBoost / me.amount) / me.getPrice();
-        } else buildings[building] = 0;
+        } else if (me.name == "Cursor") {
+            buildings[building] = 0.1;
+        } else buildings[building] = me.baseCps;
     }
     return buildings;
 }
