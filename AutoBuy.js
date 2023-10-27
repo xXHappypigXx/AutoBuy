@@ -117,7 +117,9 @@ function BuyOptimalBuilding() {
 }
 
 AutoBuy.init = function () {
+    console.log("init")
     Game.registerHook('logic', () => {
+        console.log("logic")
         BuyOptimalBuilding();
     })
 }
