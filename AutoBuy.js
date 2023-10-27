@@ -108,11 +108,13 @@ function BuyOptimalBuilding() {
             optimalCPSPC = CPSPC;
         }
     }
-    console.log(optimal)
-    var optimalObject = Game.Objects[optimal];
-    if (optimalObject.getPrice() <= Game.cookies) {
-        optimalObject.buy(1);
-        console.log("buying")
+    if (optimal) {
+        console.log(optimal)
+        var optimalObject = Game.Objects[optimal];
+        if (optimalObject.getPrice() <= Game.cookies) {
+            optimalObject.buy(1);
+            console.log("buying")
+        }
     }
 }
 
