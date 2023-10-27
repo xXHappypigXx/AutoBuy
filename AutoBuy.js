@@ -1,8 +1,11 @@
 var AutoBuy = {};
 
+// Computes the cps and how much it boosts other Buildings
 function CPSperBuilding() {
     var buildings = {};
     for (const [building, me] of Object.entries(Game.Objects)) {
+        // Ripped straight out of the source code.
+        // There was a comment that said the math might be off though
         if (me.amount > 0) {
             var synergiesWith = {};
             var synergyBoost = 0;
@@ -40,10 +43,10 @@ function CPSperBuilding() {
                 }
             }
 
-            buildings[building] = (me.storedTotalCps / me.amount) * Game.globalCpsMult + synergyBoost;
+            buildings[building] = (me.storedTotalCps / me.amount) * Game.globalCpsMult + synergyBoost / me.amount;
         } else buildings[building] = 0;
     }
-    return buildings
+    return buildings;
 }
 
 AutoBuy.init = function () {
