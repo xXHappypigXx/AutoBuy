@@ -45,8 +45,8 @@ function CPSperBuilding() {
 
             buildings[building] = (me.storedTotalCps / me.amount) * Game.globalCpsMult + synergyBoost / me.amount;
         } else if (me.name == "Cursor") {
-            buildings[building] = 0.1;
-        } else buildings[building] = me.baseCps;
+            buildings[building] = 0.1 * Game.globalCpsMult;
+        } else buildings[building] = me.baseCps * Game.globalCpsMult;
     }
     return buildings;
 }
@@ -96,8 +96,8 @@ function CPSPCperBuilding() {
 
             buildings[building] = ((me.storedTotalCps / me.amount) * Game.globalCpsMult + synergyBoost / me.amount) / me.getPrice();
         } else if (me.name == "Cursor") {
-            buildings[building] = 0.1 / 15;
-        } else buildings[building] = me.baseCps / me.getPrice();
+            buildings[building] = 0.1 / 15 * Game.globalCpsMult;
+        } else buildings[building] = me.baseCps * Game.globalCpsMult / me.getPrice();
     }
     return buildings;
 }
