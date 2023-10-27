@@ -114,12 +114,9 @@ function BuyOptimalBuilding() {
 }
 
 AutoBuy.init = function () {
-    Game.registerHook('cps', (cps) => {
-        console.log(cps);
-        return cps;
+    Game.registerHook('logic', () => {
+        BuyOptimalBuilding();
     })
-
-    console.log(CPSperBuilding());
 }
 
 Game.registerMod("AutoBuy", AutoBuy);
