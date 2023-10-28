@@ -137,15 +137,13 @@ AutoBuy.init = function () {
         AutoBuy.BuyOptimalBuilding();
     })
     AutoBuy.click = setInterval(Game.ClickCookie, 20);
-    AutoBuy.golden = setInterval(function() {
-    Game.shimmers.forEach(function(shimmer)
-    {
-        if(shimmer.type == "golden" && shimmer.wrath == 0)
-        {
-            shimmer.pop()
-        }
-    })
-}, 500);
+    AutoBuy.golden = setInterval(function () {
+        Game.shimmers.forEach(function (shimmer) {
+            if (shimmer.type == "golden" && shimmer.wrath == 0) {
+                shimmer.pop()
+            }
+        })
+    }, 500);
 }
 
 Game.registerMod("AutoBuy", AutoBuy);
