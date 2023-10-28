@@ -103,7 +103,7 @@ AutoBuy.CPSPCperBuilding = function () {
 }
 
 // Computes the cps per cookie spent for every Upgrade in store
-AutoBuy.CPSPCperBuilding = function () {
+AutoBuy.CPSPCperUpgrade = function () {
     var upgrades = {};
     for (const upgrade of Game.UpgradesInStore) {
         upgrades[upgrade.id]
