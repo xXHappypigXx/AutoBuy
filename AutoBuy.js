@@ -134,7 +134,7 @@ AutoBuy.BuyOptimal = function () {
 
 AutoBuy.init = function () {
     Game.registerHook('logic', () => {
-        AutoBuy.BuyOptimalBuilding();
+        AutoBuy.BuyOptimal();
     })
     AutoBuy.click = setInterval(Game.ClickCookie, 20);
     AutoBuy.golden = setInterval(function () {
