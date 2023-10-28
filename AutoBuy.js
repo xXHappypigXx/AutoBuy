@@ -1,7 +1,7 @@
 var AutoBuy = {};
 
 // Computes the cps and how much it boosts other Buildings
-function CPSperBuilding() {
+AutoBuy.CPSperBuilding = function() {
     var buildings = {};
     for (const [building, me] of Object.entries(Game.Objects)) {
         // Ripped straight out of the source code.
@@ -52,7 +52,7 @@ function CPSperBuilding() {
 }
 
 // Computes the cps per cookie spent for every building
-function CPSPCperBuilding() {
+AutoBuy.CPSPCperBuilding = function() {
     var buildings = {};
     for (const [building, me] of Object.entries(Game.Objects)) {
         // Ripped straight out of the source code.
@@ -102,8 +102,8 @@ function CPSPCperBuilding() {
     return buildings;
 }
 
-function BuyOptimalBuilding() {
-    var buildings = CPSPCperBuilding();
+AutoBuy.BuyOptimalBuilding = function() {
+    var buildings = AutoBuy.CPSPCperBuilding();
     var optimal = "";
     var optimalCPSPC = 0;
     for (const [building, CPSPC] of Object.entries(buildings)) {
@@ -122,7 +122,7 @@ function BuyOptimalBuilding() {
 
 AutoBuy.init = function () {
     Game.registerHook('logic', () => {
-        BuyOptimalBuilding();
+        AutoBuy.BuyOptimalBuilding();
     })
 }
 
