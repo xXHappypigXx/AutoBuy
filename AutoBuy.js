@@ -125,7 +125,7 @@ AutoBuy.BuyOptimal = function () {
     if (optimal) {
         if (optimaltype == "building") {
             var optimalObject = Game.Objects[optimal];
-            if (optimalObject.getPrice() <= Game.cookies + Game.cookiesPS * 1200) {
+            if (Game.cookies - Game.cookiesPsRaw * 1200 >= optimalObject.getPrice()) {
                 optimalObject.buy(1);
             }
         }
