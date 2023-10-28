@@ -1,7 +1,7 @@
 var AutoBuy = {};
 
 // Computes the cps and how much it boosts other Buildings
-AutoBuy.CPSperBuilding = function() {
+AutoBuy.CPSperBuilding = function () {
     var buildings = {};
     for (const [building, me] of Object.entries(Game.Objects)) {
         // Ripped straight out of the source code.
@@ -52,7 +52,7 @@ AutoBuy.CPSperBuilding = function() {
 }
 
 // Computes the cps per cookie spent for every building
-AutoBuy.CPSPCperBuilding = function() {
+AutoBuy.CPSPCperBuilding = function () {
     var buildings = {};
     for (const [building, me] of Object.entries(Game.Objects)) {
         // Ripped straight out of the source code.
@@ -102,8 +102,18 @@ AutoBuy.CPSPCperBuilding = function() {
     return buildings;
 }
 
-AutoBuy.BuyOptimalBuilding = function() {
+// Computes the cps per cookie spent for every Upgrade in store
+AutoBuy.CPSPCperBuilding = function () {
+    var upgrades = {};
+    for (const upgrade of Game.UpgradesInStore) {
+        upgrades[upgrade.id]
+    }
+    return upgrades;
+}
+
+AutoBuy.BuyOptimal = function () {
     var buildings = AutoBuy.CPSPCperBuilding();
+    var optimaltype = "building";
     var optimal = "";
     var optimalCPSPC = 0;
     for (const [building, CPSPC] of Object.entries(buildings)) {
@@ -113,9 +123,11 @@ AutoBuy.BuyOptimalBuilding = function() {
         }
     }
     if (optimal) {
-        var optimalObject = Game.Objects[optimal];
-        if (optimalObject.getPrice() <= Game.cookies) {
-            optimalObject.buy(1);
+        if (optimaltype == "building") {
+            var optimalObject = Game.Objects[optimal];
+            if (optimalObject.getPrice() <= Game.cookies + Game.cookiesPS * 1200) {
+                optimalObject.buy(1);
+            }
         }
     }
 }
