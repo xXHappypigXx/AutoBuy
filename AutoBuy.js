@@ -43,9 +43,7 @@ AutoBuy.CPSperBuilding = function () {
                 }
             }
 
-            buildings[building] = (me.storedTotalCps / me.amount) * Game.globalCpsMult + synergyBoost / me.amount;
-        } else if (me.name == "Cursor") {
-            buildings[building] = 0.1 * Game.globalCpsMult;
+            buildings[building] = me.storedCps * Game.globalCpsMult + synergyBoost / me.amount;
         } else buildings[building] = me.baseCps * Game.globalCpsMult;
     }
     return buildings;
@@ -94,7 +92,7 @@ AutoBuy.CPSPCperBuilding = function () {
                 }
             }
 
-            buildings[building] = ((me.storedTotalCps / me.amount) * Game.globalCpsMult + synergyBoost / me.amount) / me.getPrice();
+            buildings[building] = (me.storedCps * Game.globalCpsMult + synergyBoost / me.amount) / me.getPrice();
         } else buildings[building] = me.baseCps * Game.globalCpsMult / me.getPrice();
     }
     return buildings;
