@@ -140,6 +140,11 @@ AutoBuy.FTHOF = function () {
             if (minigame.magic >= 23) {
                 let amount = wizard.amount - 22;
                 wizard.sell(amount);
+                Game.shimmers.forEach(function (shimmer) {
+                    if (shimmer.type == "golden" && shimmer.wrath == 0) {
+                        shimmer.pop();
+                    }
+                });
                 minigame.castSpell(minigame.spells["hand of fate"]);
                 wizard.buy(amount);
             }
@@ -170,7 +175,7 @@ AutoBuy.init = function () {
             if (shimmer.type == "golden" && shimmer.wrath == 0) {
                 shimmer.pop();
             }
-        })
+        });
     }, 500);
 }
 
