@@ -95,8 +95,6 @@ AutoBuy.CPSPCperBuilding = function () {
             }
 
             buildings[building] = ((me.storedTotalCps / me.amount) * Game.globalCpsMult + synergyBoost / me.amount) / me.getPrice();
-        } else if (me.name == "Cursor") {
-            buildings[building] = 0.1 / 15 * Game.globalCpsMult;
         } else buildings[building] = me.baseCps * Game.globalCpsMult / me.getPrice();
     }
     return buildings;
@@ -140,10 +138,13 @@ AutoBuy.FTHOF = function () {
         mult *= buff.multCpS;
         if (name == "Click frenzy" && !Game.buffs["Devastation"]) {
             minigame.castSpell(minigame.spells["hand of fate"]);
-            var cursor = Game.Objects.Cursor;
-            var amount = cursor.amount;
-            cursor.sell(-1);
-            cursor.buy(amount);
+            for (const [name, building] of Object.entries(Game.Objects)) {
+                if (building.storedTotalCps / Game.cookiesPsRaw <= 0.01 && !building.minigame) {
+                    var amount = building.amount;
+                    building.sell(-1);
+                    building.buy(amount);
+                }
+            }
         }
     }
     if (mult >= 5) {
