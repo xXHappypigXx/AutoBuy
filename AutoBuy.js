@@ -125,22 +125,43 @@ AutoBuy.BuyOptimal = function () {
     if (optimal) {
         if (optimaltype == "building") {
             var optimalObject = Game.Objects[optimal];
-            if (Game.cookies - Game.cookiesPsRaw * 1200 >= optimalObject.getPrice()) {
+            if (Game.cookies - Game.cookiesPsRaw * 8400 >= optimalObject.getPrice()) {
+                Game.buyMode = 1;
                 optimalObject.buy(1);
             }
         }
     }
 }
 
+AutoBuy.FTHOF = function () {
+    var mult = 1;
+    var minigame = Game.Objects["Wizard tower"].minigame;
+    for (const [name, buff] of Object.entries(Game.buffs)) {
+        mult *= buff.multCpS;
+        if (name == "Click frenzy" && !Game.buffs["Devastation"]) {
+            minigame.castSpell(minigame.spells["hand of fate"]);
+            var cursor = Game.Objects.Cursor;
+            var amount = cursor.amount;
+            cursor.sell(-1);
+            cursor.buy(amount);
+        }
+    }
+    if (mult >= 5) {
+        if (minigame.magic == minigame.magicM)
+            minigame.castSpell(minigame.spells["hand of fate"]);
+    }
+}
+
 AutoBuy.init = function () {
     Game.registerHook('logic', () => {
         AutoBuy.BuyOptimal();
+        AutoBuy.FTHOF();
     })
     AutoBuy.click = setInterval(Game.ClickCookie, 20);
     AutoBuy.golden = setInterval(function () {
         Game.shimmers.forEach(function (shimmer) {
             if (shimmer.type == "golden" && shimmer.wrath == 0) {
-                shimmer.pop()
+                shimmer.pop();
             }
         })
     }, 500);
