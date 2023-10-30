@@ -141,7 +141,7 @@ AutoBuy.FTHOF = function () {
                 let amount = wizard.amount - 22;
                 wizard.sell(amount);
                 Game.shimmers.forEach(function (shimmer) {
-                    if (shimmer.type == "golden" && shimmer.wrath == 0) {
+                    if (shimmer.type == "golden" && shimmer.wrath == 0 || shimmer.force == "blood frenzy") {
                         shimmer.pop();
                     }
                 });
@@ -172,7 +172,7 @@ AutoBuy.init = function () {
     AutoBuy.click = setInterval(Game.ClickCookie, 20);
     AutoBuy.golden = setInterval(function () {
         Game.shimmers.forEach(function (shimmer) {
-            if (shimmer.type == "golden" && shimmer.wrath == 0) {
+            if (shimmer.type == "golden" && shimmer.wrath == 0 || shimmer.force == "blood frenzy") {
                 shimmer.pop();
             }
         });
