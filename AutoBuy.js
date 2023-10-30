@@ -121,7 +121,7 @@ AutoBuy.BuyOptimal = function () {
     if (optimal) {
         if (optimaltype == "building") {
             var optimalObject = Game.Objects[optimal];
-            if (Game.cookies - Game.cookiesPsRaw * 8400 >= optimalObject.getPrice()) {
+            if (Game.cookies - Game.cookiesPsRaw * AutoBuy.CookieBank >= optimalObject.getPrice()) {
                 Game.buyMode = 1;
                 optimalObject.buy(1);
             }
@@ -146,12 +146,13 @@ AutoBuy.FTHOF = function () {
         }
     }
     if (mult >= 5) {
-        if (minigame.magic == minigame.magicM)
+        if (minigame.magic == minigame.magicM || mult > 100)
             minigame.castSpell(minigame.spells["hand of fate"]);
     }
 }
 
 AutoBuy.init = function () {
+    AutoBuy.CookieBank = 8400;
     Game.registerHook('logic', () => {
         AutoBuy.BuyOptimal();
         AutoBuy.FTHOF();
