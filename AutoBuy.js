@@ -131,14 +131,21 @@ AutoBuy.BuyOptimal = function () {
 
 AutoBuy.FTHOF = function () {
     var mult = 1;
-    var minigame = Game.Objects["Wizard tower"].minigame;
+    var wizard = Game.Objects["Wizard tower"];
+    var minigame = wizard.minigame;
     for (const [name, buff] of Object.entries(Game.buffs)) {
         mult *= buff.multCpS;
         if (name == "Click frenzy" && !Game.buffs["Devastation"]) {
             minigame.castSpell(minigame.spells["hand of fate"]);
+            if (minigame.magic >= 23) {
+                let amount = wizard.amount - 22;
+                wizard.sell(amount);
+                minigame.castSpell(minigame.spells["hand of fate"]);
+                wizard.buy(amount);
+            }
             for (const [name, building] of Object.entries(Game.Objects)) {
                 if (building.storedTotalCps / Game.cookiesPsRaw <= 0.01 && !building.minigame) {
-                    var amount = building.amount;
+                    let amount = building.amount;
                     building.sell(-1);
                     building.buy(amount);
                 }
@@ -146,8 +153,8 @@ AutoBuy.FTHOF = function () {
         }
     }
     if (mult >= 5) {
-        if (minigame.magic == minigame.magicM || mult > 100)
-            minigame.castSpell(minigame.spells["hand of fate"]);
+            if (minigame.magic >= minigame.magicM * 0.9 || mult > 100)
+                minigame.castSpell(minigame.spells["hand of fate"]);
     }
 }
 
