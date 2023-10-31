@@ -157,7 +157,7 @@ AutoBuy.FTHOF = function () {
             }
         }
     }
-    if (mult >= 5) {
+    if (mult >= 50) {
             if (minigame.magic == minigame.magicM || mult > 100)
                 minigame.castSpell(minigame.spells["hand of fate"]);
     }
