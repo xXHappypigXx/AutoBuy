@@ -1,8 +1,17 @@
 var AutoBuy = {};
+AutoBuy.buildingsCPS = {};
+AutoBuy.CookieBankOverride = -1;
+
+AutoBuy.CookieBank = function () {
+    return AutoBuy.CookieBankOverride != -1
+        ? AutoBuy.CookieBankOverride
+        : 4200 *
+              (Game.Upgrades["Lucky day"].unlocked +
+                  Game.Upgrades["Serendipity"].unlocked);
+};
 
 // Computes the cps and how much it boosts other Buildings
 AutoBuy.CPSperBuilding = function () {
-    var buildings = {};
     for (const [building, me] of Object.entries(Game.Objects)) {
         // Ripped straight out of the source code.
         // There was a comment that said the math might be off though
@@ -10,24 +19,31 @@ AutoBuy.CPSperBuilding = function () {
             var synergiesWith = {};
             var synergyBoost = 0;
 
-            if (me.name == 'Grandma') {
+            if (me.name == "Grandma") {
                 for (var i in Game.GrandmaSynergies) {
                     if (Game.Has(Game.GrandmaSynergies[i])) {
-                        var other = Game.Upgrades[Game.GrandmaSynergies[i]].buildingTie;
+                        var other =
+                            Game.Upgrades[Game.GrandmaSynergies[i]].buildingTie;
                         var mult = me.amount * 0.01 * (1 / (other.id - 1));
-                        var boost = (other.storedTotalCps * Game.globalCpsMult) - (other.storedTotalCps * Game.globalCpsMult) / (1 + mult);
+                        var boost =
+                            other.storedTotalCps * Game.globalCpsMult -
+                            (other.storedTotalCps * Game.globalCpsMult) /
+                                (1 + mult);
                         synergyBoost += boost;
-                        if (!synergiesWith[other.plural]) synergiesWith[other.plural] = 0;
+                        if (!synergiesWith[other.plural])
+                            synergiesWith[other.plural] = 0;
                         synergiesWith[other.plural] += mult;
                     }
                 }
-            }
-            else if (me.name == 'Portal' && Game.Has('Elder Pact')) {
-                var other = Game.Objects['Grandma'];
-                var boost = (me.amount * 0.05 * other.amount) * Game.globalCpsMult;
+            } else if (me.name == "Portal" && Game.Has("Elder Pact")) {
+                var other = Game.Objects["Grandma"];
+                var boost =
+                    me.amount * 0.05 * other.amount * Game.globalCpsMult;
                 synergyBoost += boost;
-                if (!synergiesWith[other.plural]) synergiesWith[other.plural] = 0;
-                synergiesWith[other.plural] += boost / (other.storedTotalCps * Game.globalCpsMult);
+                if (!synergiesWith[other.plural])
+                    synergiesWith[other.plural] = 0;
+                synergiesWith[other.plural] +=
+                    boost / (other.storedTotalCps * Game.globalCpsMult);
             }
 
             for (var i in me.synergies) {
@@ -35,19 +51,26 @@ AutoBuy.CPSperBuilding = function () {
                 if (Game.Has(it.name)) {
                     var weight = 0.05;
                     var other = it.buildingTie1;
-                    if (me == it.buildingTie1) { weight = 0.001; other = it.buildingTie2; }
-                    var boost = (other.storedTotalCps * Game.globalCpsMult) - (other.storedTotalCps * Game.globalCpsMult) / (1 + me.amount * weight);
+                    if (me == it.buildingTie1) {
+                        weight = 0.001;
+                        other = it.buildingTie2;
+                    }
+                    var boost =
+                        other.storedTotalCps * Game.globalCpsMult -
+                        (other.storedTotalCps * Game.globalCpsMult) /
+                            (1 + me.amount * weight);
                     synergyBoost += boost;
-                    if (!synergiesWith[other.plural]) synergiesWith[other.plural] = 0;
+                    if (!synergiesWith[other.plural])
+                        synergiesWith[other.plural] = 0;
                     synergiesWith[other.plural] += me.amount * weight;
                 }
             }
 
-            buildings[building] = me.storedCps * Game.globalCpsMult + synergyBoost / me.amount;
-        } else buildings[building] = me.baseCps * Game.globalCpsMult;
+            AutoBuy.buildingsCPS[building] =
+                me.storedCps * Game.globalCpsMult + synergyBoost / me.amount;
+        } else AutoBuy.buildingsCPS[building] = me.baseCps * Game.globalCpsMult;
     }
-    return buildings;
-}
+};
 
 // Computes the cps per cookie spent for every building
 AutoBuy.CPSPCperBuilding = function () {
@@ -59,24 +82,31 @@ AutoBuy.CPSPCperBuilding = function () {
             var synergiesWith = {};
             var synergyBoost = 0;
 
-            if (me.name == 'Grandma') {
+            if (me.name == "Grandma") {
                 for (var i in Game.GrandmaSynergies) {
                     if (Game.Has(Game.GrandmaSynergies[i])) {
-                        var other = Game.Upgrades[Game.GrandmaSynergies[i]].buildingTie;
+                        var other =
+                            Game.Upgrades[Game.GrandmaSynergies[i]].buildingTie;
                         var mult = me.amount * 0.01 * (1 / (other.id - 1));
-                        var boost = (other.storedTotalCps * Game.globalCpsMult) - (other.storedTotalCps * Game.globalCpsMult) / (1 + mult);
+                        var boost =
+                            other.storedTotalCps * Game.globalCpsMult -
+                            (other.storedTotalCps * Game.globalCpsMult) /
+                                (1 + mult);
                         synergyBoost += boost;
-                        if (!synergiesWith[other.plural]) synergiesWith[other.plural] = 0;
+                        if (!synergiesWith[other.plural])
+                            synergiesWith[other.plural] = 0;
                         synergiesWith[other.plural] += mult;
                     }
                 }
-            }
-            else if (me.name == 'Portal' && Game.Has('Elder Pact')) {
-                var other = Game.Objects['Grandma'];
-                var boost = (me.amount * 0.05 * other.amount) * Game.globalCpsMult;
+            } else if (me.name == "Portal" && Game.Has("Elder Pact")) {
+                var other = Game.Objects["Grandma"];
+                var boost =
+                    me.amount * 0.05 * other.amount * Game.globalCpsMult;
                 synergyBoost += boost;
-                if (!synergiesWith[other.plural]) synergiesWith[other.plural] = 0;
-                synergiesWith[other.plural] += boost / (other.storedTotalCps * Game.globalCpsMult);
+                if (!synergiesWith[other.plural])
+                    synergiesWith[other.plural] = 0;
+                synergiesWith[other.plural] +=
+                    boost / (other.storedTotalCps * Game.globalCpsMult);
             }
 
             for (var i in me.synergies) {
@@ -84,28 +114,39 @@ AutoBuy.CPSPCperBuilding = function () {
                 if (Game.Has(it.name)) {
                     var weight = 0.05;
                     var other = it.buildingTie1;
-                    if (me == it.buildingTie1) { weight = 0.001; other = it.buildingTie2; }
-                    var boost = (other.storedTotalCps * Game.globalCpsMult) - (other.storedTotalCps * Game.globalCpsMult) / (1 + me.amount * weight);
+                    if (me == it.buildingTie1) {
+                        weight = 0.001;
+                        other = it.buildingTie2;
+                    }
+                    var boost =
+                        other.storedTotalCps * Game.globalCpsMult -
+                        (other.storedTotalCps * Game.globalCpsMult) /
+                            (1 + me.amount * weight);
                     synergyBoost += boost;
-                    if (!synergiesWith[other.plural]) synergiesWith[other.plural] = 0;
+                    if (!synergiesWith[other.plural])
+                        synergiesWith[other.plural] = 0;
                     synergiesWith[other.plural] += me.amount * weight;
                 }
             }
 
-            buildings[building] = (me.storedCps * Game.globalCpsMult + synergyBoost / me.amount) / me.getPrice();
-        } else buildings[building] = me.baseCps * Game.globalCpsMult / me.getPrice();
+            buildings[building] =
+                (me.storedCps * Game.globalCpsMult + synergyBoost / me.amount) /
+                me.getPrice();
+        } else
+            buildings[building] =
+                (me.baseCps * Game.globalCpsMult) / me.getPrice();
     }
     return buildings;
-}
+};
 
 // Computes the cps per cookie spent for every Upgrade in store
 AutoBuy.CPSPCperUpgrade = function () {
     var upgrades = {};
     for (const upgrade of Game.UpgradesInStore) {
-        upgrades[upgrade.id]
+        upgrades[upgrade.id];
     }
     return upgrades;
-}
+};
 
 AutoBuy.BuyOptimal = function () {
     var buildings = AutoBuy.CPSPCperBuilding();
@@ -121,62 +162,79 @@ AutoBuy.BuyOptimal = function () {
     if (optimal) {
         if (optimaltype == "building") {
             var optimalObject = Game.Objects[optimal];
-            if (Game.cookies - Game.cookiesPsRaw * AutoBuy.CookieBank >= optimalObject.getPrice()) {
+            if (
+                Game.cookies >=
+                optimalObject.getPrice() +
+                    Game.cookiesPsRaw * AutoBuy.CookieBank()
+            ) {
                 Game.buyMode = 1;
                 optimalObject.buy(1);
             }
         }
     }
-}
+};
 
 AutoBuy.FTHOF = function () {
     var mult = 1;
     var wizard = Game.Objects["Wizard tower"];
     var minigame = wizard.minigame;
-    for (const [name, buff] of Object.entries(Game.buffs)) {
-        mult *= buff.multCpS;
-        if (name == "Click frenzy" && !Game.buffs["Devastation"]) {
-            minigame.castSpell(minigame.spells["hand of fate"]);
-            if (minigame.magic >= 23) {
-                let amount = wizard.amount - 22;
-                wizard.sell(amount);
-                Game.shimmers.forEach(function (shimmer) {
-                    if ((shimmer.type == "golden" && shimmer.wrath == 0) || shimmer.force == "blood frenzy") {
-                        shimmer.pop();
-                    }
-                });
+    if (minigame) {
+        for (const [name, buff] of Object.entries(Game.buffs)) {
+            mult *= buff.multCpS;
+            if (name == "Click frenzy" && !Game.buffs["Devastation"]) {
                 minigame.castSpell(minigame.spells["hand of fate"]);
-                wizard.buy(amount);
-            }
-            for (const [name, building] of Object.entries(Game.Objects)) {
-                if (building.storedTotalCps / Game.cookiesPsRaw <= 0.01 && !building.minigame) {
-                    let amount = building.amount;
-                    building.sell(-1);
-                    building.buy(amount);
+                if (minigame.magic >= 23) {
+                    let amount = wizard.amount - 22;
+                    wizard.sell(amount);
+                    Game.shimmers.forEach(function (shimmer) {
+                        if (
+                            (shimmer.type == "golden" && shimmer.wrath == 0) ||
+                            shimmer.force == "blood frenzy"
+                        ) {
+                            shimmer.pop();
+                        }
+                    });
+                    minigame.computeMagicM();
+                    minigame.castSpell(minigame.spells["hand of fate"]);
+                    wizard.buy(amount);
+                }
+                for (const [name, building] of Object.entries(Game.Objects)) {
+                    if (
+                        Game.Objects.Temple.minigame.slot.includes(2) &&
+                        AutoBuy.buildingsCPS[name] / Game.cookiesPsRaw <=
+                            0.01 &&
+                        !building.minigame
+                    ) {
+                        let amount = building.amount;
+                        building.sell(-1);
+                        building.buy(amount);
+                    }
                 }
             }
         }
-    }
-    if (mult >= 50) {
+        if (mult >= 50) {
             if (minigame.magic == minigame.magicM || mult > 100)
                 minigame.castSpell(minigame.spells["hand of fate"]);
+        }
     }
-}
+};
 
 AutoBuy.init = function () {
-    AutoBuy.CookieBank = 8400;
-    Game.registerHook('logic', () => {
+    Game.registerHook("logic", () => {
         AutoBuy.BuyOptimal();
         AutoBuy.FTHOF();
-    })
-    AutoBuy.click = setInterval(Game.ClickCookie, 20);
+    });
+    AutoBuy.click = setInterval(Game.ClickCookie, 50);
     AutoBuy.golden = setInterval(function () {
         Game.shimmers.forEach(function (shimmer) {
-            if ((shimmer.type == "golden" && shimmer.wrath == 0) || shimmer.force == "blood frenzy") {
+            if (
+                (shimmer.type == "golden" && shimmer.wrath == 0) ||
+                shimmer.force == "blood frenzy"
+            ) {
                 shimmer.pop();
             }
         });
     }, 500);
-}
+};
 
 Game.registerMod("AutoBuy", AutoBuy);
