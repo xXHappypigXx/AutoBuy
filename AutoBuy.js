@@ -198,6 +198,7 @@ AutoBuy.FTHOF = function () {
                     minigame.castSpell(minigame.spells["hand of fate"]);
                     wizard.buy(amount);
                 }
+                AutoBuy.CPSperBuilding();
                 for (const [name, building] of Object.entries(Game.Objects)) {
                     if (
                         Game.Objects.Temple.minigame.slot.includes(2) &&
