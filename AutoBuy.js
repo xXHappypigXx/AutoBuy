@@ -76,6 +76,8 @@ AutoBuy.CPSperBuilding = function () {
 AutoBuy.CPSPCperBuilding = function () {
     var buildings = {};
     for (const [building, me] of Object.entries(Game.Objects)) {
+        console.log(building);
+        console.log(me);
         // Ripped straight out of the source code.
         // There was a comment that said the math might be off though
         if (me.amount > 0) {
@@ -132,11 +134,12 @@ AutoBuy.CPSPCperBuilding = function () {
             buildings[building] =
                 (me.storedCps * Game.globalCpsMult + synergyBoost / me.amount) /
                 me.getPrice();
-        } else
+        } else {
             buildings[building] =
-                ((building == "Cursor" ? me.baseCps() : me.baseCps) *
+                ((building == "Cursor" ? 0.1 : me.baseCps) *
                     Game.globalCpsMult) /
                 me.getPrice();
+        }
     }
     return buildings;
 };
