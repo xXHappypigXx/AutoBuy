@@ -134,7 +134,9 @@ AutoBuy.CPSPCperBuilding = function () {
                 me.getPrice();
         } else
             buildings[building] =
-                (me.baseCps * Game.globalCpsMult) / me.getPrice();
+                ((building == "Cursor" ? me.baseCps() : me.baseCps) *
+                    Game.globalCpsMult) /
+                me.getPrice();
     }
     return buildings;
 };
