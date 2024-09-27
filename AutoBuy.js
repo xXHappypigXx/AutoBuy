@@ -146,13 +146,57 @@ AutoBuy.CPSPCperBuilding = function () {
 AutoBuy.CPSPCperUpgrade = function () {
     var upgrades = {};
     for (const upgrade of Game.UpgradesInStore) {
-        upgrades[upgrade.id];
+        if (upgrade.pool == "cookie") {
+            // Cookie flavor upgrade
+            upgrades[upgrade.id] =
+                (Game.cookiesPsRaw * (0.01 * upgrade.power)) /
+                upgrade.basePrice;
+        }
+        if (typeof upgrade.buildingTie == "object") {
+            // Tiered, Synergy or Fortune
+            if (upgrade.tier == "fortune") {
+                // Fortune
+                upgrades[upgrade.id] =
+                    (upgrade.buildingTie.storedTotalCps * 0.07) /
+                    upgrade.basePrice;
+            }
+            if (upgrade.tier == "synergy1" || upgrade.tier == "synergy2") {
+                // Synergy
+                upgrades[upgrade.id] =
+                    (upgrade.buildingTie.storedTotalCps *
+                        0.05 *
+                        upgrade.buildingTie1.amount +
+                        upgrade.buildingTie1.storedTotalCps *
+                            0.001 *
+                            upgrade.buildingTie.amount) /
+                    upgrade.basePrice;
+            }
+            if (upgrade.buildingTie == upgrade.buildingTie1) {
+                // Tiered
+                // upgrades[upgrade.id] = upgrade.buildingTie.storedTotalCps / upgrade.basePrice;
+                if (!Game.Tiers[upgrade.tier].special) {
+                    var tierAdd = 1;
+                    //unshackled
+                    let me = upgrade.buildingTie;
+                    if (
+                        Game.ascensionMode != 1 &&
+                        Game.Has(me.unshackleUpgrade)
+                    )
+                        tierAdd += me.id == 1 ? 0.5 : (20 - me.id) * 0.1;
+
+                    upgrades[upgrade.id] =
+                        (upgrade.buildingTie.storedTotalCps * tierAdd) /
+                        upgrade.basePrice;
+                }
+            }
+        }
     }
     return upgrades;
 };
 
 AutoBuy.BuyOptimal = function () {
     var buildings = AutoBuy.CPSPCperBuilding();
+    var upgrades = AutoBuy.CPSPCperUpgrade();
     var optimaltype = "building";
     var optimal = "";
     var optimalCPSPC = 0;
@@ -160,6 +204,13 @@ AutoBuy.BuyOptimal = function () {
         if (CPSPC > optimalCPSPC) {
             optimal = building;
             optimalCPSPC = CPSPC;
+        }
+    }
+    for (const [upgradeId, CPSPC] of Object.entries(upgrades)) {
+        if (CPSPC > optimalCPSPC) {
+            optimal = upgradeId;
+            optimalCPSPC = CPSPC;
+            optimaltype = "upgrade";
         }
     }
     if (optimal) {
@@ -172,6 +223,16 @@ AutoBuy.BuyOptimal = function () {
             ) {
                 Game.buyMode = 1;
                 optimalObject.buy(1);
+            }
+        }
+        if (optimaltype == "upgrade") {
+            var optimalObject = Game.UpgradesById[optimal];
+            if (
+                Game.cookies >=
+                optimalObject.basePrice +
+                    Game.cookiesPsRaw * AutoBuy.CookieBank()
+            ) {
+                optimalObject.click();
             }
         }
     }
