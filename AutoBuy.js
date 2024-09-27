@@ -138,6 +138,14 @@ AutoBuy.CPSPCperBuilding = function () {
     return buildings;
 };
 
+const heavenly = {
+    129: 0.0005,
+    130: 0.0025,
+    131: 0.005,
+    132: 0.0075,
+    133: 0.01,
+};
+
 // Computes the cps per cookie spent for every Upgrade in store
 AutoBuy.CPSPCperUpgrade = function () {
     var upgrades = {};
@@ -147,25 +155,47 @@ AutoBuy.CPSPCperUpgrade = function () {
             upgrades[upgrade.id] =
                 (Game.cookiesPsRaw * (0.01 * upgrade.power)) /
                 upgrade.basePrice;
+            continue;
+        }
+        if (heavenly[upgrade.id]) {
+            // Heavenly
+            upgrades[upgrade.id] =
+                (Game.cookiesPsRaw * heavenly[upgrade.id] * Game.prestige) /
+                upgrade.basePrice;
+            continue;
+        }
+        if (upgrade.id <= 2) {
+            // Cursor and Mouse
+            upgrade[upgrade.id] =
+                (Game.computedMouseCps * 20 +
+                    Game.Objects.Cursor.storedTotalCps * Game.globalCpsMult) /
+                upgrade.basePrice;
+            continue;
         }
         if (typeof upgrade.buildingTie == "object") {
-            // Tiered, Synergy or Fortune
+            // Tiered, Synergy, Fortune or Grandma
             if (upgrade.tier == "fortune") {
                 // Fortune
                 upgrades[upgrade.id] =
-                    (upgrade.buildingTie.storedTotalCps * 0.07) /
+                    (upgrade.buildingTie.storedTotalCps *
+                        Game.globalCpsMult *
+                        0.07) /
                     upgrade.basePrice;
+                continue;
             }
             if (upgrade.tier == "synergy1" || upgrade.tier == "synergy2") {
                 // Synergy
                 upgrades[upgrade.id] =
                     (upgrade.buildingTie.storedTotalCps *
+                        Game.globalCpsMult *
                         0.05 *
                         upgrade.buildingTie1.amount +
                         upgrade.buildingTie1.storedTotalCps *
+                            Game.globalCpsMult *
                             0.001 *
                             upgrade.buildingTie.amount) /
                     upgrade.basePrice;
+                continue;
             }
             if (upgrade.buildingTie == upgrade.buildingTie1) {
                 // Tiered
@@ -181,9 +211,25 @@ AutoBuy.CPSPCperUpgrade = function () {
                         tierAdd += me.id == 1 ? 0.5 : (20 - me.id) * 0.1;
 
                     upgrades[upgrade.id] =
-                        (upgrade.buildingTie.storedTotalCps * tierAdd) /
+                        (upgrade.buildingTie.storedTotalCps *
+                            Game.globalCpsMult *
+                            tierAdd) /
                         upgrade.basePrice;
+                    continue;
                 }
+            }
+            if (upgrade.buildingTie1 === undefined) {
+                // Grandma
+                upgrades[upgrade.id] =
+                    ((upgrade.buildingTie.storedTotalCps *
+                        Game.globalCpsMult *
+                        0.01 *
+                        Game.Objects.Grandma.amount) /
+                        (upgrade.buildingTie.id - 1) +
+                        Game.Objects.Grandma.storedTotalCps *
+                            Game.globalCpsMult) /
+                    upgrade.basePrice;
+                continue;
             }
         }
     }
