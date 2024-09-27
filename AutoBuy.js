@@ -236,6 +236,38 @@ AutoBuy.BuyOptimal = function () {
     }
 };
 
+AutoBuy.GetOptimal = function () {
+    var buildings = AutoBuy.CPSPCperBuilding();
+    var upgrades = AutoBuy.CPSPCperUpgrade();
+    var optimaltype = "building";
+    var optimal = "";
+    var optimalCPSPC = 0;
+    for (const [building, CPSPC] of Object.entries(buildings)) {
+        if (CPSPC > optimalCPSPC) {
+            optimal = building;
+            optimalCPSPC = CPSPC;
+        }
+    }
+    for (const [upgradeId, CPSPC] of Object.entries(upgrades)) {
+        if (CPSPC > optimalCPSPC) {
+            optimal = upgradeId;
+            optimalCPSPC = CPSPC;
+            optimaltype = "upgrade";
+        }
+    }
+    if (optimal) {
+        var optimalObject;
+        if (optimaltype == "building") {
+            optimalObject = Game.Objects[optimal];
+        }
+        if (optimaltype == "upgrade") {
+            optimalObject = Game.UpgradesById[optimal];
+        }
+        console.log(optimalObject);
+        console.log(optimalCPSPC);
+    }
+};
+
 AutoBuy.FTHOF = function () {
     var mult = 1;
     var wizard = Game.Objects["Wizard tower"];
