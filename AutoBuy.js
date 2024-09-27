@@ -140,10 +140,10 @@ AutoBuy.CPSPCperBuilding = function () {
 
 const heavenly = {
     129: 0.0005,
-    130: 0.0025,
-    131: 0.005,
-    132: 0.0075,
-    133: 0.01,
+    130: 0.002,
+    131: 0.0025,
+    132: 0.0025,
+    133: 0.0025,
 };
 
 // Computes the cps per cookie spent for every Upgrade in store
