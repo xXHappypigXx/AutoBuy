@@ -5,9 +5,7 @@ AutoBuy.CookieBankOverride = -1;
 AutoBuy.CookieBank = function () {
     return AutoBuy.CookieBankOverride != -1
         ? AutoBuy.CookieBankOverride
-        : 3000 *
-              (Game.Upgrades["Lucky day"].unlocked +
-                  Game.Upgrades["Serendipity"].unlocked);
+        : 3000 * (Game.Has("Lucky day") + Game.Has("Serendipity"));
 };
 
 // Computes the cps and how much it boosts other Buildings
