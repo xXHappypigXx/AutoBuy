@@ -5,7 +5,7 @@ AutoBuy.CookieBankOverride = -1;
 AutoBuy.CookieBank = function () {
     return AutoBuy.CookieBankOverride != -1
         ? AutoBuy.CookieBankOverride
-        : 4200 *
+        : 3000 *
               (Game.Upgrades["Lucky day"].unlocked +
                   Game.Upgrades["Serendipity"].unlocked);
 };
@@ -15,9 +15,9 @@ AutoBuy.CPSperBuilding = function () {
     for (const [building, me] of Object.entries(Game.Objects)) {
         // Ripped straight out of the source code.
         // There was a comment that said the math might be off though
+        var synergyBoost = 0;
         if (me.amount > 0) {
             var synergiesWith = {};
-            var synergyBoost = 0;
 
             if (me.name == "Grandma") {
                 for (var i in Game.GrandmaSynergies) {
@@ -65,10 +65,8 @@ AutoBuy.CPSperBuilding = function () {
                     synergiesWith[other.plural] += me.amount * weight;
                 }
             }
-
-            AutoBuy.buildingsCPS[building] =
-                me.storedCps * Game.globalCpsMult + synergyBoost / me.amount;
-        } else AutoBuy.buildingsCPS[building] = me.baseCps * Game.globalCpsMult;
+        }
+        AutoBuy.buildingsCPS[building] = me.storedTotalCps + synergyBoost;
     }
 };
 
