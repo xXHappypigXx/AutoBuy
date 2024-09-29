@@ -154,14 +154,14 @@ AutoBuy.CPSPCperUpgrade = function () {
             // Cookie flavor upgrade
             upgrades[upgrade.id] =
                 (Game.cookiesPsRaw * (0.01 * upgrade.power)) /
-                upgrade.basePrice;
+                upgrade.getPrice();
             continue;
         }
         if (heavenly[upgrade.id]) {
             // Heavenly
             upgrades[upgrade.id] =
                 (Game.cookiesPsRaw * heavenly[upgrade.id] * Game.prestige) /
-                upgrade.basePrice;
+                upgrade.getPrice();
             continue;
         }
         if (upgrade.id <= 2) {
@@ -169,7 +169,7 @@ AutoBuy.CPSPCperUpgrade = function () {
             upgrade[upgrade.id] =
                 (Game.computedMouseCps * 20 +
                     Game.Objects.Cursor.storedTotalCps * Game.globalCpsMult) /
-                upgrade.basePrice;
+                upgrade.getPrice();
             continue;
         }
         if (typeof upgrade.buildingTie == "object") {
@@ -180,7 +180,7 @@ AutoBuy.CPSPCperUpgrade = function () {
                     (upgrade.buildingTie.storedTotalCps *
                         Game.globalCpsMult *
                         0.07) /
-                    upgrade.basePrice;
+                    upgrade.getPrice();
                 continue;
             }
             if (upgrade.tier == "synergy1" || upgrade.tier == "synergy2") {
@@ -194,12 +194,12 @@ AutoBuy.CPSPCperUpgrade = function () {
                             Game.globalCpsMult *
                             0.001 *
                             upgrade.buildingTie.amount) /
-                    upgrade.basePrice;
+                    upgrade.getPrice();
                 continue;
             }
             if (upgrade.buildingTie == upgrade.buildingTie1) {
                 // Tiered
-                // upgrades[upgrade.id] = upgrade.buildingTie.storedTotalCps / upgrade.basePrice;
+                // upgrades[upgrade.id] = upgrade.buildingTie.storedTotalCps / upgrade.getPrice();
                 if (!Game.Tiers[upgrade.tier].special) {
                     var tierAdd = 1;
                     //unshackled
@@ -215,7 +215,7 @@ AutoBuy.CPSPCperUpgrade = function () {
                         (upgrade.buildingTie.storedTotalCps *
                             Game.globalCpsMult *
                             tierAdd) /
-                        upgrade.basePrice;
+                        upgrade.getPrice();
                     continue;
                 }
             }
@@ -229,7 +229,7 @@ AutoBuy.CPSPCperUpgrade = function () {
                         (upgrade.buildingTie.id - 1) +
                         Game.Objects.Grandma.storedTotalCps *
                             Game.globalCpsMult) /
-                    upgrade.basePrice;
+                    upgrade.getPrice();
                 continue;
             }
         }
@@ -272,7 +272,7 @@ AutoBuy.BuyOptimal = function () {
             var optimalObject = Game.UpgradesById[optimal];
             if (
                 Game.cookies >=
-                optimalObject.basePrice +
+                optimalObject.getPrice() +
                     Game.cookiesPsRaw * AutoBuy.CookieBank()
             ) {
                 optimalObject.click();
