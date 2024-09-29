@@ -206,7 +206,8 @@ AutoBuy.CPSPCperUpgrade = function () {
                     let me = upgrade.buildingTie;
                     if (
                         Game.ascensionMode != 1 &&
-                        Game.Has(me.unshackleUpgrade)
+                        Game.Has(me.unshackleUpgrade) &&
+                        Game.Has(Game.Tiers[upgrade.tier].unshackleUpgrade)
                     )
                         tierAdd += me.id == 1 ? 0.5 : (20 - me.id) * 0.1;
 
