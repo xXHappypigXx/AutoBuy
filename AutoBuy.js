@@ -275,7 +275,7 @@ AutoBuy.BuyOptimal = function () {
                 optimalObject.getPrice() +
                     Game.cookiesPsRaw * AutoBuy.CookieBank()
             ) {
-                optimalObject.click();
+                optimalObject.buy();
             }
         }
     }
@@ -309,6 +309,7 @@ AutoBuy.GetOptimal = function () {
             optimalObject = Game.UpgradesById[optimal];
         }
         console.log(optimalObject);
+        console.log(Beautify(optimalObject.getPrice()))
         console.log(optimalCPSPC);
     }
 };
