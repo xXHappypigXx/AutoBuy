@@ -321,7 +321,7 @@ AutoBuy.FTHOF = function () {
     if (minigame) {
         for (const [name, buff] of Object.entries(Game.buffs)) {
             mult *= buff.multCpS;
-            if (name == "Click frenzy" && !Game.buffs["Devastation"]) {
+            if ((name == "Click frenzy" || name == "Dragonflight") && !Game.buffs["Devastation"]) {
                 minigame.castSpell(minigame.spells["hand of fate"]);
                 if (minigame.magic >= 23) {
                     let amount = wizard.amount - 22;
