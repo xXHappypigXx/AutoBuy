@@ -309,7 +309,7 @@ AutoBuy.GetOptimal = function () {
             optimalObject = Game.UpgradesById[optimal];
         }
         console.log(optimalObject);
-        console.log(Beautify(optimalObject.getPrice()))
+        console.log(Beautify(optimalObject.getPrice()));
         console.log(optimalCPSPC);
     }
 };
@@ -321,7 +321,10 @@ AutoBuy.FTHOF = function () {
     if (minigame) {
         for (const [name, buff] of Object.entries(Game.buffs)) {
             mult *= buff.multCpS;
-            if ((name == "Click frenzy" || name == "Dragonflight") && !Game.buffs["Devastation"]) {
+            if (
+                (name == "Click frenzy" || name == "Dragonflight") &&
+                !Game.buffs["Devastation"]
+            ) {
                 minigame.castSpell(minigame.spells["hand of fate"]);
                 if (minigame.magic >= 23) {
                     let amount = wizard.amount - 22;
@@ -370,7 +373,8 @@ AutoBuy.init = function () {
         Game.shimmers.forEach(function (shimmer) {
             if (
                 (shimmer.type == "golden" && shimmer.wrath == 0) ||
-                shimmer.force == "blood frenzy"
+                shimmer.force == "blood frenzy" ||
+                shimmer.force == "cursed finger"
             ) {
                 shimmer.pop();
             }
