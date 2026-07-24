@@ -68,9 +68,16 @@ AutoBuy.CPSperBuilding = function () {
     }
 };
 
+AutoBuy.ThousandFingerBonus = function () {
+    var num=0;
+    for (var i in Game.Objects) {if (Game.Objects[i].name!='Cursor') num+=Game.Objects[i].amount;}
+    return Game.Objects.Cursor.storedTotalCps / num;
+}
+
 // Computes the cps per cookie spent for every building
 AutoBuy.CPSPCperBuilding = function () {
     var buildings = {};
+    var tfb = AutoBuy.ThousandFingerBonus();
     for (const [building, me] of Object.entries(Game.Objects)) {
         // Ripped straight out of the source code.
         // There was a comment that said the math might be off though
@@ -126,11 +133,11 @@ AutoBuy.CPSPCperBuilding = function () {
             }
 
             buildings[building] =
-                (me.storedCps * Game.globalCpsMult + synergyBoost / me.amount) /
+                (me.storedTotalCps + synergyBoost + (building != "Cursor" ? tfb : 0.0)) * Game.globalCpsMult / me.amount /
                 me.getPrice();
         } else {
             buildings[building] =
-                ((building == "Cursor" ? 0.1 : me.baseCps) *
+                ((building == "Cursor" ? Game.Objects.Cursor.baseCps(Game.Objects.Cursor) : me.baseCps) *
                     Game.globalCpsMult) /
                 me.getPrice();
         }
@@ -166,7 +173,7 @@ AutoBuy.CPSPCperUpgrade = function () {
         }
         if (upgrade.id <= 2) {
             // Cursor and Mouse
-            upgrade[upgrade.id] =
+            upgrades[upgrade.id] =
                 (Game.computedMouseCps * 20 +
                     Game.Objects.Cursor.storedTotalCps * Game.globalCpsMult) /
                 upgrade.getPrice();
